@@ -16,8 +16,9 @@ This engine is designed to ingest fragmented and noisy candidate data from multi
 ---
 ## 🎥 Video Demonstration
 Click below to watch a quick walkthrough of the Candidate Profile Engine in action:
-**[▶️ Watch the Demo Video Here](#)** 
+
 https://github.com/user-attachments/assets/8b0e5861-5409-419d-8189-1b5bde401c3c
+
 ## 🚀 Key Features
 
 * **Multi-Modal Parsing:** Natively handles unstructured `PDF` files (using `PyMuPDF`) and structured `CSV` files, translating both into a normalized internal schema.
