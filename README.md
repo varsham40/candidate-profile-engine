@@ -1,6 +1,6 @@
 
 
-https://github.com/user-attachments/assets/8b0e5861-5409-419d-8189-1b5bde401c3c
+
 
 <div align="center">
   
@@ -14,6 +14,9 @@ This engine is designed to ingest fragmented and noisy candidate data from multi
 </div>
 
 ---
+## 🎥 Video Demonstration
+Click below to watch a quick walkthrough of the Candidate Profile Engine in action:
+**[▶️ Watch the Demo Video Here](#)** 
 https://github.com/user-attachments/assets/8b0e5861-5409-419d-8189-1b5bde401c3c
 ## 🚀 Key Features
 
