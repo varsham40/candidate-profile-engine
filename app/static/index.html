@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidate Profile Engine</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Include basic icons (FontAwesome or similar, here using inline SVGs for simplicity) -->
 </head>
@@ -152,6 +152,7 @@
                 <h2>{} Output Profile Stream</h2>
                 <div class="terminal-actions">
                     <span class="live-feed"><span class="dot blue"></span> LIVE_FEED</span>
+                    <button id="summaryViewBtn" class="summary-view-btn">📋 Summary View</button>
                     <button class="copy-btn">COPY</button>
                 </div>
             </div>
@@ -192,7 +193,20 @@
             <span id="toastMsg">Notification message</span>
         </div>
 
+        <!-- Profile Summary Modal -->
+        <div id="summaryModal" class="modal-overlay" style="display:none;">
+            <div class="modal-content summary-modal-content">
+                <div class="modal-header">
+                    <h2>👤 Candidate Profile Summary</h2>
+                    <button class="close-btn" id="closeSummaryBtn">&times;</button>
+                </div>
+                <div class="modal-body" id="summaryContainer">
+                    <!-- Summary cards injected here -->
+                </div>
+            </div>
+        </div>
+
     </div>
-    <script src="/static/script.js"></script>
+    <script src="/static/script.js?v=4"></script>
 </body>
 </html>

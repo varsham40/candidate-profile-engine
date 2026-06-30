@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const spinner = document.getElementById('spinner');
     const errorBox = document.getElementById('errorBox');
     const jsonOutput = document.getElementById('jsonOutput');
+    let lastProfileData = null; // store last result for summary view
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -218,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Render Output
+            lastProfileData = data;
             jsonOutput.innerHTML = syntaxHighlight(JSON.stringify(data, null, 2));
 
         } catch (err) {
@@ -277,5 +279,161 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // --- Summary View ---
+    const summaryModal = document.getElementById('summaryModal');
+    const summaryContainer = document.getElementById('summaryContainer');
+    const closeSummaryBtn = document.getElementById('closeSummaryBtn');
+    const summaryViewBtn = document.getElementById('summaryViewBtn');
+
+    summaryViewBtn.addEventListener('click', () => {
+        if (!lastProfileData) {
+            showToast('Please compile a profile first before viewing the summary.');
+            return;
+        }
+        renderSummary(lastProfileData);
+        summaryModal.style.display = 'flex';
+    });
+
+    closeSummaryBtn.addEventListener('click', () => {
+        summaryModal.style.display = 'none';
+    });
+
+    function renderSummary(data) {
+        // Handle both standard output (canonical_profile) and projected config output (root data)
+        const profile = data?.data?.canonical_profile || data?.data;
+        if (!profile) {
+            summaryContainer.innerHTML = '<p style="color:#94A3B8;">No profile data found.</p>';
+            return;
+        }
+
+        const getValue = (field) => {
+            if (!field) return null;
+            if (typeof field === 'object' && 'value' in field) return field.value;
+            return field;
+        };
+
+        const getConf = (field) => {
+            if (field && typeof field === 'object' && 'confidence' in field)
+                return Math.round(field.confidence * 100);
+            return null;
+        };
+
+        const confBadge = (field) => {
+            const c = getConf(field);
+            if (c === null) return '';
+            const color = c >= 85 ? '#22C55E' : c >= 70 ? '#F59E0B' : '#EF4444';
+            return `<span class="summary-conf-badge" style="background:${color}22;color:${color};border:1px solid ${color}55;">${c}% confidence</span>`;
+        };
+
+        const renderList = (val) => {
+            if (!val || !Array.isArray(val) || val.length === 0) return '<em style="color:#64748B">—</em>';
+            return val.map(v => `<span class="summary-tag">${v}</span>`).join(' ');
+        };
+
+        const renderExpEdu = (items) => {
+            if (!items || !Array.isArray(items) || items.length === 0)
+                return '<em style="color:#64748B">—</em>';
+            return items.map(item => {
+                const title = item.title || item.degree || item.institution || 'Entry';
+                const sub = item.company || item.institution || '';
+                const dates = [item.start_date, item.end_date].filter(Boolean).join(' → ');
+                return `<div class="summary-exp-item">
+                    <div class="summary-exp-header">
+                        <strong>${title}</strong>
+                        ${dates ? `<span class="summary-date">${dates}</span>` : ''}
+                    </div>
+                    ${sub ? `<div class="summary-exp-sub">@ ${sub}</div>` : ''}
+                </div>`;
+            }).join('');
+        };
+
+        const name = getValue(profile.full_name) || getValue(profile.name) || getValue(profile.candidate_name) || 'Unknown Candidate';
+        const emails = getValue(profile.emails) || getValue(profile.email) || getValue(profile.candidate_email);
+        const phones = getValue(profile.phones) || getValue(profile.phone);
+        const location = getValue(profile.location);
+        const primarySkills = getValue(profile.primary_skills) || getValue(profile.skills);
+        const secondarySkills = getValue(profile.secondary_skills);
+        const experience = getValue(profile.experience);
+        const education = getValue(profile.education);
+        const warnings = data?.data?.metadata?.warnings || profile.metadata?.warnings || [];
+
+        summaryContainer.innerHTML = `
+            <div style="width: 100%; display: flex; flex-direction: column;">
+                <div class="summary-hero">
+                    <div class="summary-avatar">${name.charAt(0).toUpperCase()}</div>
+                    <div class="summary-hero-info">
+                        <h2 class="summary-name">${name}</h2>
+                        ${confBadge(profile.full_name || profile.name || profile.candidate_name)}
+                    </div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h3 class="summary-card-title">📞 Contact Information</h3>
+                        <div class="summary-row">
+                            <span class="summary-label">Email</span>
+                            <span class="summary-value">${Array.isArray(emails) ? emails.join(', ') : (emails || '—')}</span>
+                            ${confBadge(profile.emails || profile.email || profile.candidate_email)}
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Phone</span>
+                            <span class="summary-value">${Array.isArray(phones) ? phones.join(', ') : (phones || '—')}</span>
+                            ${confBadge(profile.phones || profile.phone)}
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Location</span>
+                            <span class="summary-value">${location || '—'}</span>
+                            ${confBadge(profile.location)}
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-card-header">
+                            <h3 class="summary-card-title">💡 Primary Skills</h3>
+                            ${confBadge(profile.primary_skills || profile.skills)}
+                        </div>
+                        <div class="summary-tags">${renderList(primarySkills)}</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-card-header">
+                            <h3 class="summary-card-title">🔧 Secondary Skills</h3>
+                            ${confBadge(profile.secondary_skills)}
+                        </div>
+                        <div class="summary-tags">${renderList(secondarySkills)}</div>
+                    </div>
+
+                    <div class="summary-card full-width">
+                        <div class="summary-card-header">
+                            <h3 class="summary-card-title">💼 Work Experience</h3>
+                            ${confBadge(profile.experience)}
+                        </div>
+                        <div class="summary-list-container">
+                            ${renderExpEdu(experience)}
+                        </div>
+                    </div>
+
+                    <div class="summary-card full-width">
+                        <div class="summary-card-header">
+                            <h3 class="summary-card-title">🎓 Education</h3>
+                            ${confBadge(profile.education)}
+                        </div>
+                        <div class="summary-list-container">
+                            ${renderExpEdu(education)}
+                        </div>
+                    </div>
+
+                    ${warnings.length > 0 ? `
+                    <div class="summary-card full-width summary-warnings">
+                        <h3 class="summary-card-title">⚠️ Validation Warnings</h3>
+                        <div class="summary-list-container">
+                            ${warnings.map(w => `<div class="summary-warning-item">${w}</div>`).join('')}
+                        </div>
+                    </div>` : ''}
+                </div>
+            </div>
+        `;
+    }
 
 });

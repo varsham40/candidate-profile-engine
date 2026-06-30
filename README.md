@@ -19,6 +19,14 @@ Click below to watch a quick walkthrough of the Candidate Profile Engine in acti
 
 https://github.com/user-attachments/assets/8b0e5861-5409-419d-8189-1b5bde401c3c
 
+## 🎥 Video Demonstration
+
+Click below to watch a quick walkthrough of the Candidate Profile Engine in action:
+
+**[▶️ Watch the Demo Video Here](#)** 
+
+---
+
 ## 🚀 Key Features
 
 * **Multi-Modal Parsing:** Natively handles unstructured `PDF` files (using `PyMuPDF`) and structured `CSV` files, translating both into a normalized internal schema.
@@ -76,11 +84,6 @@ source venv/bin/activate
 ### 4. Install Dependencies
 ```bash
 pip install -r requirements.txt
-```
-
-### 5. Install Dependencies
-```bash
-pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
@@ -96,7 +99,7 @@ Open your web browser and navigate to:
 
 ![JSON Output Terminal](./Outputjson.png)
 
----
+
 
 ## 📂 Project Structure
 
@@ -141,4 +144,24 @@ candidate-profile-engine/
 
 ---
 
+## 🧪 Running Tests
+
+The engine includes a suite of `pytest` unit tests that verify the extraction, normalization, and merging logic against "gold standard" profile schemas.
+
+### Key Test Suites Included:
+* **`test_parsers.py`** — Verifies that `PyMuPDF` and the `csv` parser correctly read raw data without truncation.
+* **`test_extractor.py`** — Validates the Regex and `spaCy` NLP Named Entity Recognition for extracting names, emails, and skills.
+* **`test_normalizer.py`** — Ensures date standardizations (e.g., converting "Oct 24" to "2024-10") and whitespace trimming work flawlessly.
+* **`test_merger.py`** — Tests the `RapidFuzz` logic to ensure conflicting data across CSV and PDF is gracefully merged and deduplicated.
+* **`test_validator.py`** — Checks that the constraint engine successfully catches malformed emails/phones and assigns proper `[0.0 - 1.0]` confidence scores.
+* **`test_edge_cases.py`** — Runs extreme scenarios like totally empty resumes, missing fields, and corrupted CSVs to guarantee the engine never crashes.
+* **`test_pipeline.py`** — Tests the full End-to-End (E2E) Directed Acyclic Graph (DAG) execution.
+
+To run the test suite:
+```bash
+pytest
+```
+*(Or use `pytest -v` for verbose output).*
+
+---
 
