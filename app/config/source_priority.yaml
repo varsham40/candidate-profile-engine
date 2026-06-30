@@ -1,0 +1,6 @@
+sources:
+  recruiter_csv: 0.85
+  ats_json: 0.90
+  resume_pdf: 0.80
+  linkedin: 0.95
+  recruiter_notes: 0.75

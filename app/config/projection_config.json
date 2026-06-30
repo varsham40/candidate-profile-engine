@@ -1,0 +1,10 @@
+{
+  "fields": ["name", "email", "skills", "soft_skills", "implicit_skills"],
+  "include_confidence": true,
+  "include_provenance": false,
+  "null_handling": "include",
+  "field_mapping": {
+    "name": "candidate_name",
+    "email": "candidate_email"
+  }
+}

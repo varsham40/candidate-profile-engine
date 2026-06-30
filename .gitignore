@@ -1,0 +1,20 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+venv/
+ENV/
+
+# VS Code
+.vscode/
+
+# Project Specific (Do NOT commit uploaded user data)
+temp_uploads/
+
+# OS Generated
+.DS_Store
+Thumbs.db

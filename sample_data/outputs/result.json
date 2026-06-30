@@ -1,0 +1,18 @@
+{
+    "candidate_name": {
+        "value": "Varsha",
+        "confidence": 0.85
+    },
+    "candidate_email": {
+        "value": "varsha@gmail.com",
+        "confidence": 0.91
+    },
+    "skills": {
+        "value": [
+            "React",
+            "Python",
+            "AWS"
+        ],
+        "confidence": 0.9
+    }
+}
